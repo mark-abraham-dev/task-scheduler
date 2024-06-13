@@ -14,25 +14,25 @@ const executeTask = async (task: any) => {
 };
 
 const scheduleTasks = async () => {
-    const tasks = await Task.find();
+    const tasks = await Task.find({ status: "Pending" });
     tasks.forEach(async (task) => {
         console.log("DEBUG:", task);
-        if (task.status === "Pending") {
-            if (task.time) {
-                const executionDate = new Date(task.time);
-                const cronTime = `${executionDate.getSeconds()} ${executionDate.getMinutes()} ${executionDate.getHours()} ${executionDate.getDate()} ${executionDate.getMonth() + 1} *`;
-                if (executionDate > new Date()) {
-                    await Task.findByIdAndUpdate({ _id: task._id }, { status: "Scheduled" });
-                    cron.schedule(cronTime, async () => {
-                        await executeTask(task);
-                        await Task.findByIdAndUpdate({ _id: task._id }, { status: "Expired" });
-                    });
-                }
-            }
-            if (task.cron) {
+        if (task.time) {
+            const executionDate = new Date(task.time);
+            const cronTime = `${executionDate.getSeconds()} ${executionDate.getMinutes()} ${executionDate.getHours()} ${executionDate.getDate()} ${executionDate.getMonth() + 1} *`;
+            if (executionDate > new Date()) {
                 await Task.findByIdAndUpdate({ _id: task._id }, { status: "Scheduled" });
-                cron.schedule(task.cron, () => executeTask(task));
+                cron.schedule(cronTime, async () => {
+                    await executeTask(task);
+                    await Task.findByIdAndUpdate({ _id: task._id }, { status: "Expired" });
+                });
+            } else {
+                await Task.findByIdAndUpdate({ _id: task._id }, { status: "Expired" });
             }
+        }
+        if (task.cron) {
+            await Task.findByIdAndUpdate({ _id: task._id }, { status: "Scheduled" });
+            cron.schedule(task.cron, () => executeTask(task));
         }
     });
 };
