@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { getLogs } from "../services/api";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Container,
+  Typography,
+} from "@mui/material";
 
 interface Log {
   _id: string;
@@ -20,16 +27,19 @@ const LogList: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Execution Logs</h2>
-      <ul>
+    <Container>
+      <Typography variant="h4">Execution Logs</Typography>
+      <List>
         {logs.map((log) => (
-          <li key={log._id}>
-            Task ID: {log.taskId} - Executed at: {log.executionTime}
-          </li>
+          <ListItem key={log._id}>
+            <ListItemText
+              primary={`Task ID: ${log.taskId}`}
+              secondary={`Executed at: ${log.executionTime}`}
+            />
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Container>
   );
 };
 

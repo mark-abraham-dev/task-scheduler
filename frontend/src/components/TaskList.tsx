@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { getTasks, deleteTask } from "../services/api";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  Container,
+  Typography,
+} from "@mui/material";
+import { Delete as DeleteIcon } from "@mui/icons-material";
 
 interface Task {
   _id: string;
@@ -26,17 +36,28 @@ const TaskList: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Scheduled Tasks</h2>
-      <ul>
+    <Container>
+      <Typography variant="h4">Scheduled Tasks</Typography>
+      <List>
         {tasks.map((task) => (
-          <li key={task._id}>
-            {task.title} - {task.time || task.cron}
-            <button onClick={() => handleDelete(task._id)}>Delete</button>
-          </li>
+          <ListItem key={task._id}>
+            <ListItemText
+              primary={task.title}
+              secondary={task.time || task.cron}
+            />
+            <ListItemSecondaryAction>
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => handleDelete(task._id)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Container>
   );
 };
 
