@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { TextField, Button, Container, Grid, Typography } from "@mui/material";
 import { createTask, updateTask } from "../services/api";
+import { Task } from "../types";
 
 interface TaskFormProps {
-  task?: any;
+  task: Task | null;
   onSuccess: () => void;
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({ task, onSuccess }) => {
-  const [title, setTitle] = useState(task?.title || "");
-  const [time, setTime] = useState(task?.time || "");
-  const [cron, setCron] = useState(task?.cron || "");
+  const [title, setTitle] = useState("");
+  const [time, setTime] = useState("");
+  const [cron, setCron] = useState("");
+
+  useEffect(() => {
+    setTitle(task?.title || "");
+    setTime(task?.time || "");
+    setCron(task?.cron || "");
+  }, [task]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,36 +31,49 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSuccess }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Title</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Time</label>
-        <input
-          type="datetime-local"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          required={!cron}
-        />
-      </div>
-      <div>
-        <label>Cron</label>
-        <input
-          type="text"
-          value={cron}
-          onChange={(e) => setCron(e.target.value)}
-          required={!time}
-        />
-      </div>
-      <button type="submit">{task ? "Update" : "Create"}</button>
-    </form>
+    <Container>
+      <Typography variant="h4">
+        {task ? "Update Task" : "Create Task"}
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              label="Title"
+              fullWidth
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Time"
+              type="datetime-local"
+              fullWidth
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              required={!cron}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Cron"
+              fullWidth
+              value={cron}
+              onChange={(e) => setCron(e.target.value)}
+              required={!time}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="primary">
+              {task ? "Update" : "Create"}
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
   );
 };
 
