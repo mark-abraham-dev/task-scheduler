@@ -7,6 +7,7 @@ export interface Log {
 export interface Task {
     _id: string;
     title: string;
+    type: string;
     time: string;
     cron: string;
 }
