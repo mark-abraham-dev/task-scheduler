@@ -16,6 +16,7 @@ const executeTask = async (task: any) => {
 const scheduleTasks = async () => {
     const tasks = await Task.find();
     tasks.forEach(async (task) => {
+        console.log("DEBUG:", task);
         if (task.status === "Pending") {
             if (task.time) {
                 const executionDate = new Date(task.time);
