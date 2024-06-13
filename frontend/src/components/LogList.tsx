@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { getLogs } from "../services/api";
 import {
   List,
   ListItem,
   ListItemText,
   Container,
   Typography,
+  Paper,
 } from "@mui/material";
+import { getLogs } from "../services/api";
+import { Log } from "../types";
 
-interface Log {
-  _id: string;
-  taskId: string;
-  executionTime: string;
+interface LogListProps {
+  refresh: boolean;
 }
 
-const LogList: React.FC = () => {
+const LogList: React.FC<LogListProps> = ({ refresh }) => {
   const [logs, setLogs] = useState<Log[]>([]);
 
   useEffect(() => {
     fetchLogs();
-  }, []);
+  }, [refresh]);
 
   const fetchLogs = async () => {
     const response = await getLogs();
@@ -29,16 +29,18 @@ const LogList: React.FC = () => {
   return (
     <Container>
       <Typography variant="h4">Execution Logs</Typography>
-      <List>
-        {logs.map((log) => (
-          <ListItem key={log._id}>
-            <ListItemText
-              primary={`Task ID: ${log.taskId}`}
-              secondary={`Executed at: ${log.executionTime}`}
-            />
-          </ListItem>
-        ))}
-      </List>
+      <Paper style={{ maxHeight: 400, overflow: "auto" }}>
+        <List>
+          {logs.map((log) => (
+            <ListItem key={log._id}>
+              <ListItemText
+                primary={`Task ID: ${log.taskId}`}
+                secondary={`Executed at: ${log.executionTime}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
     </Container>
   );
 };

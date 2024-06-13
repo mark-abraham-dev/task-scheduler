@@ -1,16 +1,23 @@
-import React, { useState } from "react";
-import { createTask, updateTask } from "../services/api";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Container, Grid, Typography } from "@mui/material";
+import { createTask, updateTask } from "../services/api";
+import { Task } from "../types";
 
 interface TaskFormProps {
-  task?: any;
+  task: Task | null;
   onSuccess: () => void;
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({ task, onSuccess }) => {
-  const [title, setTitle] = useState(task?.title || "");
-  const [time, setTime] = useState(task?.time || "");
-  const [cron, setCron] = useState(task?.cron || "");
+  const [title, setTitle] = useState("");
+  const [time, setTime] = useState("");
+  const [cron, setCron] = useState("");
+
+  useEffect(() => {
+    setTitle(task?.title || "");
+    setTime(task?.time || "");
+    setCron(task?.cron || "");
+  }, [task]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { getTasks, deleteTask } from "../services/api";
 import {
   List,
   ListItem,
@@ -8,22 +7,23 @@ import {
   IconButton,
   Container,
   Typography,
+  Paper,
 } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
+import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+import { getTasks, deleteTask } from "../services/api";
+import { Task } from "../types";
 
-interface Task {
-  _id: string;
-  title: string;
-  time: string;
-  cron: string;
+interface TaskListProps {
+  refresh: boolean;
+  onEdit: (task: Task) => void;
 }
 
-const TaskList: React.FC = () => {
+const TaskList: React.FC<TaskListProps> = ({ refresh, onEdit }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [refresh]);
 
   const fetchTasks = async () => {
     const response = await getTasks();
@@ -38,25 +38,34 @@ const TaskList: React.FC = () => {
   return (
     <Container>
       <Typography variant="h4">Scheduled Tasks</Typography>
-      <List>
-        {tasks.map((task) => (
-          <ListItem key={task._id}>
-            <ListItemText
-              primary={task.title}
-              secondary={task.time || task.cron}
-            />
-            <ListItemSecondaryAction>
-              <IconButton
-                edge="end"
-                aria-label="delete"
-                onClick={() => handleDelete(task._id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
-      </List>
+      <Paper style={{ maxHeight: 400, overflow: "auto" }}>
+        <List>
+          {tasks.map((task) => (
+            <ListItem key={task._id}>
+              <ListItemText
+                primary={task.title}
+                secondary={task.time || task.cron}
+              />
+              <ListItemSecondaryAction>
+                <IconButton
+                  edge="end"
+                  aria-label="edit"
+                  onClick={() => onEdit(task)}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => handleDelete(task._id)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
     </Container>
   );
 };
