@@ -15,16 +15,23 @@ const executeTask = async (task: any) => {
 
 const scheduleTasks = async () => {
     const tasks = await Task.find();
-    tasks.forEach((task) => {
-        if (task.time) {
-            const executionDate = new Date(task.time);
-            const now = new Date();
-            if (executionDate > now && executionDate <= new Date(now.getTime() + TIME_INTERVAL)) {
-                setTimeout(() => executeTask(task), executionDate.getTime() - now.getTime());
+    tasks.forEach(async (task) => {
+        if (task.status === "Pending") {
+            if (task.time) {
+                const executionDate = new Date(task.time);
+                const cronTime = `${executionDate.getSeconds()} ${executionDate.getMinutes()} ${executionDate.getHours()} ${executionDate.getDate()} ${executionDate.getMonth() + 1} *`;
+                if (executionDate > new Date()) {
+                    await Task.findByIdAndUpdate({ _id: task._id }, { status: "Scheduled" });
+                    cron.schedule(cronTime, async () => {
+                        await executeTask(task);
+                        await Task.findByIdAndUpdate({ _id: task._id }, { status: "Expired" });
+                    });
+                }
             }
-        }
-        if (task.cron) {
-            cron.schedule(task.cron, () => executeTask(task));
+            if (task.cron) {
+                await Task.findByIdAndUpdate({ _id: task._id }, { status: "Scheduled" });
+                cron.schedule(task.cron, () => executeTask(task));
+            }
         }
     });
 };

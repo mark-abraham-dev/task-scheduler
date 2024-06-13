@@ -5,6 +5,7 @@ interface ITask extends Document {
     type: string;
     time?: string;
     cron?: string;
+    status: string;
 }
 
 const taskSchema = new Schema<ITask>({
@@ -12,6 +13,7 @@ const taskSchema = new Schema<ITask>({
     type: { type: String, required: true },
     time: { type: String },
     cron: { type: String },
+    status: { type: String, required: true },
 });
 
 export const Task = model<ITask>('Task', taskSchema);

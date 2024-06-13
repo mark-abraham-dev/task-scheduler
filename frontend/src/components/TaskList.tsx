@@ -43,8 +43,8 @@ const TaskList: React.FC<TaskListProps> = ({ refresh, onEdit }) => {
           {tasks.map((task) => (
             <ListItem key={task._id}>
               <ListItemText
-                primary={task.title}
-                secondary={task.time || task.cron}
+                primary={`${task.title} (${task.type})`}
+                secondary={`${task.time || task.cron} | ${task.status}`}
               />
               <ListItemSecondaryAction>
                 <IconButton

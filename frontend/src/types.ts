@@ -10,4 +10,5 @@ export interface Task {
     type: string;
     time: string;
     cron: string;
+    status: string;
 }

@@ -9,13 +9,13 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const task = new Task(req.body);
+    const task = new Task({ ...req.body, status: "Pending" });
     await task.save();
     res.status(201).json(task);
 });
 
 router.put('/:id', async (req, res) => {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const task = await Task.findByIdAndUpdate(req.params.id, { ...req.body, status: "Pending" }, { new: true });
     res.json(task);
 });
 
