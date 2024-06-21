@@ -36,7 +36,7 @@ const scheduleTasks = async () => {
     });
 };
 
-export const runTaskScheduler = async () => {
+export const runTaskScheduler = () => {
     console.log("Scheduler is running");
     const taskInterval = setInterval(scheduleTasks, TIME_INTERVAL);
     return () => clearInterval(taskInterval);
