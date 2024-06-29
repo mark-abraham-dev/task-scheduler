@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document } from "mongoose";
 
 interface ILog extends Document {
     taskId: string;
@@ -10,4 +10,4 @@ const logSchema = new Schema<ILog>({
     executionTime: { type: String, required: true },
 });
 
-export const Log = model<ILog>('Log', logSchema);
+export const Log = model<ILog>("Log", logSchema);

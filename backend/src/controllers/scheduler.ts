@@ -1,11 +1,6 @@
-import cron from 'node-cron';
-import dotenv from "dotenv";
-import { Task } from './models/Task';
-import { Log } from './models/Log';
-
-dotenv.config();
-
-const TIME_INTERVAL = Number(process.env.TIME_INTERVAL!);
+import cron from "node-cron";
+import { Task } from "../models/Task";
+import { Log } from "../models/Log";
 
 const executeTask = async (task: any) => {
     const executionTime = new Date().toISOString();
@@ -13,7 +8,7 @@ const executeTask = async (task: any) => {
     await log.save();
 };
 
-const scheduleTasks = async () => {
+export const scheduleTasks = async () => {
     const tasks = await Task.find({ status: "Pending" });
     tasks.forEach(async (task) => {
         if (task.time) {
@@ -35,9 +30,3 @@ const scheduleTasks = async () => {
         }
     });
 };
-
-export const runTaskScheduler = () => {
-    console.log("Scheduler is running");
-    const taskInterval = setInterval(scheduleTasks, TIME_INTERVAL);
-    return () => clearInterval(taskInterval);
-}
