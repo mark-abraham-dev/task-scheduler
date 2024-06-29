@@ -1,7 +1,7 @@
-import cron from 'node-cron';
+import cron from "node-cron";
 import dotenv from "dotenv";
-import { Task } from './models/Task';
-import { Log } from './models/Log';
+import { Task } from "./models/Task";
+import { Log } from "./models/Log";
 
 dotenv.config();
 
